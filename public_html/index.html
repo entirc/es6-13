@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <link rel="shortcut icon" href="Retro.png"/>
+        <title>Metaprogramação</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="estilo.css" rel="stylesheet" type="text/css"/>
+    </head>
+
+    <body>
+        <h2>Metaprogramação</h2>
+        <a href="https://speakerdeck.com/lucasfcosta/nas-entranhas-do-javascript-meta-programacao" target="_blank">
+            Nas Entranhas do JavaScript: Meta Programação - Slides
+        </a>
+        <br>
+        <a href="http://lucasfcosta.com/talks/2016-12-10-Nas-Entranhas-do-JavaScript.html" target="_blank">
+            Nas Entranhas do JavaScript: Meta Programação - Apresentação
+        </a>
+        <br>
+        <a href="http://lucasfcosta.com/talks/2017-04-03-PagarMe-Talks-Meta-Programacao-em-JavaScript.html" target="_blank">
+            Nas Entranhas do JavaScript: Meta Programação - Apresentação Curta
+        </a>
+
+        <h2>Tipos de Metaprogramação</h2>
+
+        <label><t class=atencao>Introspection:</t> you have read-only access to the structure of a program.
+            <img onclick="Introspection()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label></br>
+        <label><t class=atencao>Self-modification:</t> you can change that structure.
+            <img onclick="removerPropriedade()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label></br>
+        <label><t class=atencao>Intercession:</t> you can redefine the semantics of some language operations.</label>
+
+        <hr>
+
+        <h2>Reflection</h2>
+        <a href="https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Reflect" target="_blank">
+            Reflect
+        </a>
+        <br>
+        <a href="http://www.keithcirkel.co.uk/metaprogramming-in-es6-part-2-reflect/" target="_blank">
+            Metaprogramming in ES6: Part 2 - Reflect
+        </a>
+        <br>
+        <a href="https://ponyfoo.com/articles/es6-reflection-in-depth" target="_blank">
+            ES6 Reflection in Depth
+        </a>
+        <br>
+        <a href="http://qnimate.com/es6-reflect-api-tutorial/" target="_blank">
+            ES6 Reflect API Tutorial
+        </a>
+        <br>
+
+        <h2>Métodos</h2>
+        <a href="https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank">
+            Object.defineProperty()
+        </a><br>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/defineProperty" target="_blank">
+            Reflect.defineProperty()
+        </a><br>
+        <a href="https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Function/apply" target="_blank">
+            Function.prototype.apply()
+        </a><br>		
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/apply" target="_blank">
+            Reflect.apply()
+        </a><br>
+
+
+        <h2>Exemplos</h2>
+        <label><t class=atencao>Alura:</t>
+            <img onclick="alura()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label><br>
+        <label><t class=atencao>Ex0:</t>
+            <img onclick="ex0R()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label>
+        <label><t class=atencao>Ex1:</t>
+            <img onclick="ex1R()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label>
+        <label><t class=atencao>Ex2:</t>
+            <img onclick="ex2R()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label>
+        <label><t class=atencao>Ex3:</t>
+            <img onclick="ex3R()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label><br>
+
+        <hr>
+
+        <script>
+            function Introspection() {
+                // Base level
+                let obj = {
+                    hello() {
+                        console.log('Hello!');
+                    }
+                };
+
+                // Meta level
+                for (let key of Object.keys(obj)) {
+                    console.log(key);
+                }
+
+                console.log(obj);
+            }
+        </script>
+
+        <script>
+            function removerPropriedade() {
+                function moveProperty(source, propertyName, target) {
+                    target[propertyName] = source[propertyName];
+                    delete source[propertyName];
+                }
+
+                let obj1 = {prop: 'abc'};
+                let obj2 = {};
+                moveProperty(obj1, 'prop', obj2);
+
+                console.log("obj1>>> ", obj1);
+                console.log("obj2>>> ", obj2);
+            }
+            
+            
+        </script>
+
+        <script>
+            let objeto1 = {nome: 'Bob'};
+            let objeto2 = {nome: 'Leo'};
+
+            function alura() {
+                Reflect.apply(exibeNome, objeto2, []);
+                //exibeNome();
+            }
+
+            function exibeNome() {
+                alert(this.nome);
+            }
+        </script>
+
+        <script>
+            function ex0R() {
+                //retorna o objeto.
+                let target = {};
+                let r = Object.defineProperty(target, 'foo', {value: 'bar'});
+                console.log("r>>> ", r);
+
+                //returns a Boolean.
+                let target1 = {};
+                let yay = Reflect.defineProperty(target1, 'foo', {value: 'bar'});
+                console.log("yay>>> ", yay);
+                console.log("target1>>>", target1);
+            }
+
+            function ex1R() {
+                //versão 5
+                var obj = {a: 1};
+                var a = Object.defineProperty(obj, "b", {value: 2});
+                console.log(a);
+                // no equivalent in ES5
+                var b = Object.getOwnPropertyNames(obj); // [ "a", "b" ]
+                console.log("b>>> ",b);
+                console.log("-------------------------------------------");
+                //versão 6
+                let obj1 = {a: 1}
+                let c = Object.defineProperty(obj1, "b", {value: 2})
+                console.log(c);
+                obj1[Symbol("c")] = 3
+                let d = Reflect.ownKeys(obj1) // [ "a", "b", Symbol(c) ]
+                console.log(d);
+            }
+
+            function ex2R() {
+                //versão 5
+                let result = Function.prototype.apply.call(Math.floor, undefined, [1.75]);
+                console.log(result);
+            }
+
+            function ex3R() {
+                //versão 6
+                let a = Reflect.apply(Math.floor, undefined, [1.75]);
+                console.log(a);
+
+                let b = Reflect.apply(String.fromCharCode, undefined, [104, 101, 108, 108, 111]);
+                console.log(b);
+                console.log(String.fromCharCode(9822));
+
+                let c = Reflect.apply(RegExp.prototype.exec, /ab/, ['confabulation']).index;
+                console.log(c);
+
+                let d = Reflect.apply(''.charAt, 'ponies', [3]);
+                console.log(d);
+                console.log('ponies'.charAt(4));
+            }
+        </script>
+
+
+
+        <h2>Proxies</h2>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy" target="_blank">
+            Proxy
+        </a>
+        <br>
+        <a href="http://2ality.com/2014/12/es6-proxies.html" target="_blank">
+            Meta programming with ECMAScript 6 proxies
+        </a>	
+        <br>
+        <a href="http://lucasfcosta.com/2016/11/15/Meta-Programming-in-JavaScript-Part-Three.html" target="_blank">
+            Meta Programming In JavaScript - Part Three: Proxies and Reflection
+        </a><br>
+
+        <h2>Métodos</h2>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/get" target="_blank">
+            handler.get()
+        </a>
+        <br>
+        <label>
+            <p> 
+                O target é o objeto real que é encapsulado pela proxy. É este objeto 
+                que não quisemos "sujar" com armadilhas ou qualquer código que não 
+                diga respeito ao modelo.
+            </p>
+            <p>
+                O prop é a propriedade em si, que está sendo lida naquele momento.
+            </p>
+            <p>
+                O receiver é a referência ao próprio proxy. É na configuração do 
+                handler do Proxy que colocamos armadilhas.
+            </p>
+        </label>
+
+
+        <h2>Exemplos</h2>
+        <label><t class=atencao>Alura:</t>
+            <img onclick="criarObjetoProxy()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label>
+        <label><t class=atencao>Alura1:</t>
+            <img onclick="aluraGet()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label>
+        <label><t class=atencao>Alura2:</t>
+            <img onclick="aluraSet()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label>
+        <label><t class=atencao>Alura3:</t>
+            <img onclick="aluraP1()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label><br>
+        <label><t class=atencao>Ex1:</t>
+            <img onclick="exP1()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label>
+        <label><t class=atencao>Ex2:</t>
+            <img onclick="exP2()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label>
+        <label><t class=atencao>Ex3:</t>
+            <img onclick="exP3()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label>
+        <label><t class=atencao>Ex4:</t>
+            <img onclick="exP4()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label>
+        <label><t class=atencao>Ex5:</t>
+            <img onclick="exP5()" src="http://www.programaartebrasil.com.br/img/play.png"></img>
+        </label>
+        <br>
+        <hr>
+
+        <h2>Links</h2>
+        <a href="https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/eval" target="_blank">
+            eval()
+        </a><br>	
+        <a href="https://unicode-table.com/es/" target="_blank">
+            Tabla de caracteres Unicode®
+        </a><br>
+
+
+        <script>
+            function criarObjetoProxy() {
+                let funcionario = {email: 'abc@abc.com'};
+
+                let funcionarioProxy = new Proxy(funcionario, {
+
+                    get(target, prop, receiver) {
+                        console.log(target);
+                        console.log(prop);
+                        console.log(receiver);
+                        console.log('Armadilha aqui!');
+                        let x = Reflect.get(target, prop, receiver);
+                        console.log("x ", x);
+                        return x;
+                    }
+
+                });
+
+                console.log(funcionarioProxy.email);
+
+                let funcionarioProxy1 = new Proxy(funcionario, {
+
+                    get(target, prop, receiver) {
+                        console.log('Armadilha aqui!');
+                        let y = target[prop];
+                        console.log("y ", y);
+                        return y;
+                    }
+
+                });
+
+                console.log(funcionarioProxy1.email);
+            }
+
+            function aluraGet() {
+                let negociacao = new Proxy(new Negociacao(new Date(), 1, 100), {
+                    get: function (target, prop, receiver) {
+                        console.log(`a propriedade "${prop}" foi interceptada.`);
+                        return Reflect.get(target, prop, receiver);
+                    }
+                });
+                console.log(negociacao);
+
+                console.log(negociacao.quantidade);
+                console.log(negociacao.valor);
+            }
+
+            function aluraSet() {
+                let negociacao = new Proxy(new Negociacao(new Date(), 1, 100), {
+                    set: function (target, prop, value, receiver) {
+                        console.log(`Valor anterior: ${target[prop]}, novo valor: ${value}`);
+                        return Reflect.set(target, prop, value, receiver);
+                    }
+                });
+
+                negociacao._quantidade = 10;
+                negociacao._valor = 200;
+            }
+
+            function aluraP1() {
+                let lista = new Proxy(new ListaNegociacoes(), {
+                    get(target, prop, receiver) {
+                        console.log(prop);
+                        if (['adiciona', 'esvazia', 'e'].includes(prop) && typeof (target[prop]) == typeof (Function)) {
+                            //  console.log(target);
+                            //console.log(receiver);
+                            return function () {
+                                console.log(`a propriedade "${prop}" foi interceptada`);
+                                Reflect.apply(target[prop], target, arguments);
+                            };
+                        }
+                        return Reflect.get(target, prop, receiver);
+
+                    }
+                });
+                lista.adiciona(new Negociacao(new Date(), 1, 100));
+                lista.esvazia();
+                lista.e;
+            }
+
+            function exP1() {
+                const dinosaur = {
+                    name: 'Fred',
+                    legs: 4,
+                    isDangerous: true
+                };
+
+                const proxifiedDinosaur = new Proxy(dinosaur, {
+                    get: (target, propName) => {
+                        console.log('Property Accessed: ' + propName);
+                    }
+                });
+
+                // These won't log anything to the console since we're acessing the non-proxified object
+                dinosaur.name;
+                dinosaur.legs;
+                dinosaur.isDangerous;
+
+                // These will log the name of the accessed property, since they're being called on the wrapper object
+                proxifiedDinosaur.name; // Property Accessed: name
+                proxifiedDinosaur.legs; // Property Accessed: legs
+                proxifiedDinosaur.isDangerous; // Property Accessed: isDangerous
+                console.log(proxifiedDinosaur);
+            }
+
+            function exP2() {
+                const multiplesOfThree = new Proxy([], {
+                    get: (target, index) => {
+                        // To get every multiple of three each index must be equal `index * 3`
+                        return index * 3;
+                    }
+                });
+
+                // Now let's print the fifty first multiples of three:
+                for (let index = 0; index < 50; index++) {
+                    console.log(multiplesOfThree[index]); // 0, 3, 6, 9, 12, 15...
+                }
+            }
+
+            function exP3() {
+                const privateCounter = {
+                    count: 0,
+                    increment: function increment() {
+                        this.count++;
+                        return this;
+                    },
+                    decrement: function decrement() {
+                        this.count--;
+                        return this;
+                    }
+                };
+
+                const counter = new Proxy(privateCounter, {
+                    get: (target, propName) => {
+                        // If property exists in target we will return it, otherwise we will throw an error
+                        if (propName in target) {
+                            return target[propName];
+                        } else {
+                            throw new Error('Property ' + propName + ' does not exist.');
+                        }
+                    }
+                });
+
+                try {
+                    console.log(counter.count); // 0
+                    console.log(counter.increment().count); // 1
+                    console.log(counter.decrement().count); // 0
+                    console.log(counter.unicorn);
+                } catch (e) {
+                    console.log(e); // Error: Property unicorn does not exist.
+                }
+            }
+
+            function exP4() {
+                const dinosaur = {
+                    name: 'Fred',
+                    isDangerous: true
+                };
+
+                const dinoProxy = Proxy.revocable(dinosaur, {
+                    get: (target, property) => {
+                        return 'RAWRRRRRRRR';
+                    }
+                });
+
+                // We need this assignment because the `revocable` method returns an object with the proxified object and the revoke method
+                const proxifiedDinosaur = dinoProxy.proxy;
+
+                console.log(proxifiedDinosaur);
+                console.log("dino>>> ",dinoProxy.proxy);
+
+                // Now everytime we access a property in our `proxifiedDinosaur` it gets intercepted by the `get` trap in our handler
+                console.log(proxifiedDinosaur.name); // "RAWRRRRRRRR"
+                console.log(proxifiedDinosaur.isDangerous); // "RAWRRRRRRRR"
+
+                // Now, if we call `revoke` on our `dinoProxy` we get a TypeError when accessing properties on `proxifiedDinosaur`
+                dinoProxy.revoke();
+                console.log(proxifiedDinosaur.name); // TypeError: Cannot perform 'get' on a proxy that has been revoked
+                console.log(proxifiedDinosaur.isDangerous); // TypeError: Cannot perform 'get' on a proxy that has been revoked
+            }
+
+            function exP5() {
+                let count = 0;
+                const myProto = new Proxy({}, {
+                    get: (target, propName) => {
+                        count++;
+                    }
+                });
+
+                const anInstance = Object.create(myProto);
+                anInstance.propOne;
+                anInstance.propTwo;
+                anInstance.propTwo;
+                anInstance.propThree;
+                anInstance.propThree;
+                anInstance.propThree;
+
+                console.log('We had to check myProto ' + count + ' times.');
+            }
+            
+            
+            // https://msdn.microsoft.com/pt-br/library/mt146826(v=vs.94).aspx
+        </script>
+
+        <script src="Negociacao.js"></script>
+        <script src="ListaNegociacoes.js" type="text/javascript"></script>
+    </body>
+</html>
